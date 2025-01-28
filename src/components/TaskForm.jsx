@@ -4,34 +4,96 @@ import Tag from './Tag';
 
 const TaskForm = () => {
 
-  const [task, setTask] = useState("");
-  const handleTaskChange = e =>{
-    setTask(e.target.value);
+  const [taskData, setTaskData] =  useState({
+    task: "",
+    status: "todo",
+    tags: []
+  })
+
+  const checkTag = (tag) => {
+    return taskData.tags.some((item) => item === tag);
+  };
+
+  const selectTag = (tag) => {
+    if (taskData.tags.some((item) => item === tag)) {
+      const filterTags = taskData.tags.filter((item) => item !== tag);
+      setTaskData((prev) => {
+        return { ...prev, tags: filterTags };
+      });
+    } else {
+      setTaskData((prev) => {
+        return { ...prev, tags: [...prev.tags, tag] };
+      });
+    }
+  };
+
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+
+    setTaskData(prev =>{
+      return {...prev, [name]: value}
+    })
   }
-  console.log(task)
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(taskData);
+    setTasks((prev) => {
+      return [...prev, taskData];
+    });
+    setTaskData({
+      task: "",
+      status: "todo",
+      tags: [],
+    });
+  };
+
   return (
     <header className="appHeader">
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
+          name="task"
+          value={taskData.task}
           className="taskInput"
           placeholder="Enter yout task here.."
-          onChange={handleTaskChange}
+          onChange={handleChange}
         />
 
         <div className="taskFormBottomLine">
           <div>
-            <Tag tagName="HTML"/>
-            <Tag tagName="CSS"/>
-            <Tag tagName="JavaScript"/>
-            <Tag tagName="React"/>
+            <Tag
+              tagName="HTML"
+              selectTag={selectTag}
+              selected={checkTag("HTML")}
+            />
+            <Tag
+              tagName="CSS"
+              selectTag={selectTag}
+              selected={checkTag("CSS")}
+            />
+            <Tag
+              tagName="JavaScript"
+              selectTag={selectTag}
+              selected={checkTag("JavaScript")}
+            />
+            <Tag
+              tagName="React"
+              selectTag={selectTag}
+              selected={checkTag("React")}
+            />
           </div>
 
           <div>
-            <select className="taskStatus">
+            <select
+              name="status"
+              value={taskData.status}
+              className="taskStatus"
+              onChange={handleChange}
+            >
               <option value="todo">To Do</option>
-              <option value="doing">To Do</option>
-              <option value="done">To Do</option>
+              <option value="doing">Doing</option>
+              <option value="done">Done</option>
             </select>
             <button type="submit" className="taskSubmit">
               + Add Task

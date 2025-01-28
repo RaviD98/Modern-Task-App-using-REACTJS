@@ -2,7 +2,7 @@ import React from "react";
 
 import "./Tag.css";
 
-const Tag = ({ tagName, selectTag, selected }) => {
+const Tag = ({ tagName, selectTag, selected}) => {
     const tagStyle = {
         HTML: { backgroundColor: "#fda821" },
         CSS: { backgroundColor: "#15d4c8" },
